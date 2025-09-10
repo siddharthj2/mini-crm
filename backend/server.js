@@ -6,6 +6,7 @@ const orderRoutes=require("./routes/orders")
 const campaignRoutes=require("./routes/campaigns")
 const logsRoutes=require("./routes/logs")
 const dashboardRoutes=require("./routes/dashboard");
+const processStreamstart=require("./consumers/communicationConsumer");
 
 dotenv.config();
 const app=express();
@@ -17,6 +18,6 @@ app.use("/api/order",orderRoutes);
 app.use("/api/campaign",campaignRoutes);
 app.use("/api/logs",logsRoutes);
 app.use("/api/dashboard",dashboardRoutes);
-
+processStreamstart();
 connectDB();
 app.listen(port,()=>console.log(`server is running on port ${port}`));

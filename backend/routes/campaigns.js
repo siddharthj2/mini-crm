@@ -4,6 +4,7 @@ const Campaign=require("../models/Campaign");
 const CommunicationLog = require("../models/CommunicationLogs");
 const { generateMessages } = require("../services/aiService");
 const router=express.Router();
+const redis=require("../config/redis");
 
 router.post('/',async(req,res)=>{
     try{
@@ -25,6 +26,22 @@ router.post('/',async(req,res)=>{
         const aiMessages=await generateMessages(name,rules);
 
         for(let cust of customers){
+            const message = aiMessages[Math.floor(Math.random() * aiMessages.length)];
+            await redis.xadd(
+                "communicationStream",
+                "*",
+                "campaignId", campaign._id.toString(),
+                "customerId", cust._id.toString(),
+                "message",message
+            );
+        }
+        res.status(201).json({message: "campaign created and logs created",
+                                campaign,
+                                audience: customers.length,
+                                aiMessages});
+
+        /*
+        for(let cust of customers){
             const status=Math.random()<0.9 ? "Sent":"Failed";
             const message = aiMessages[Math.floor(Math.random() * aiMessages.length)];
             const logtable=new CommunicationLog({
@@ -40,6 +57,8 @@ router.post('/',async(req,res)=>{
                                 campaign,
                                 audience: customers.length,
                                 aiMessages});
+
+        */
     }catch(error){
         console.log("error in creating campaign");
         res.status(500).json({message:"server error",error:error.message});
