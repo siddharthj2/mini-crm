@@ -74,7 +74,10 @@ router.post('/',async(req,res)=>{
 
 router.get('/',async(req,res)=>{
     try{
-        const campaign=await Campaign.find()
+        const campaigns = await Campaign.find({ userId: req.user.googleId })
+        if(campaigns.length === 0){
+            return res.status(404).json({ message: "No campaigns found for this user" });
+        }
         res.send(campaign);
     }catch(error){
         console.log("error in server",error);
