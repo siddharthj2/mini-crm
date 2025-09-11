@@ -34,6 +34,35 @@ async function generateMessages(campaignName,rules){
         `Don't miss out on ${campaignName}!`,
         ]; 
     }
+};
+
+async function generateCampaignSummary(campaign, stats){
+    try{
+        
+        const prompt = `Generate a friendly marketing summary for a CRM dashboard.
+        Campaign: "${campaign.name}".
+        Audience size: ${stats.total} customers.
+        Delivered successfully: ${stats.sent} messages (${((stats.sent / stats.total) * 100).toFixed(0)}% success rate).
+        High-value customers (₹10K+): ${stats.highValueSent || 0} delivered out of ${stats.highValueTotal || 0}.
+        Output 1-2 concise sentences suitable for display on a dashboard.`;
+        
+          const response = await groq.chat.completions.create({
+            model: "llama-3.1-8b-instant",
+            messages: [{ role: "user", content: prompt }],
+            max_tokens: 100,
+            temperature: 0.7,
+          });
+        
+          const text = response.choices[0]?.message?.content || "";
+          return text.trim();
+    }catch(error){
+        console.error("AI message generation error:", error.message);
+        return [
+        `Campaign: "${campaign.name}".
+        Audience size: ${stats.total} customers.
+        Delivered successfully: ${stats.sent} messages (${((stats.sent / stats.total) * 100).toFixed(0)}% success rate).`,
+        ]; 
+    }
 }
 
-module.exports = { generateMessages };
+module.exports = { generateMessages , generateCampaignSummary};

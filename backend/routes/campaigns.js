@@ -5,6 +5,9 @@ const CommunicationLog = require("../models/CommunicationLogs");
 const { generateMessages } = require("../services/aiService");
 const router=express.Router();
 const redis=require("../config/redis");
+const ensureAuthenticated = require("../middleware/auth");
+
+router.use(ensureAuthenticated);
 
 router.post('/',async(req,res)=>{
     try{
@@ -19,7 +22,8 @@ router.post('/',async(req,res)=>{
         const campaign =new Campaign({
             name,
             rules,
-            audienceSize:customers.length
+            audienceSize:customers.length,
+            userId: req.user.googleId
         })
         await campaign.save();
 
@@ -32,7 +36,8 @@ router.post('/',async(req,res)=>{
                 "*",
                 "campaignId", campaign._id.toString(),
                 "customerId", cust._id.toString(),
-                "message",message
+                "message",message,
+                "userId", req.user.googleId,
             );
         }
         res.status(201).json({message: "campaign created and logs created",

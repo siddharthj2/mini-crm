@@ -2,6 +2,9 @@ const express=require("express");
 const Customer=require("../models/Customer");
 const Order=require("../models/Order");
 const router=express.Router();
+const ensureAuthenticated = require("../middleware/auth");
+
+router.use(ensureAuthenticated);
 
 router.post('/',async(req,res)=>{
     try{

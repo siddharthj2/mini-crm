@@ -1,27 +1,40 @@
-const express =require("express");
-const Customer= require("../models/Customer");
-const Campaign= require("../models/Campaign");
-const CommunicationLog =require("../models/CommunicationLogs");
+const express = require("express");
+const Campaign = require("../models/Campaign");
+const CommunicationLog = require("../models/CommunicationLogs");
+const ensureAuthenticated = require("../middleware/auth");
+const { generateCampaignSummary } = require("../services/aiService");
+
 const router = express.Router();
+
+router.use(ensureAuthenticated);
+
 router.get("/", async (req, res) => {
   try {
-    const totalCustomers= await Customer.countDocuments();
-    const totalCampaigns= await Campaign.countDocuments();
-    const totalLogs =await CommunicationLog.countDocuments();
-    const sentLogs =await CommunicationLog.countDocuments({ status: "Sent" });
-    const failedLogs= await CommunicationLog.countDocuments({ status: "Failed" });
-    const successRate= totalLogs > 0 ? ((sentLogs / totalLogs) * 100).toFixed(2) : 0;
-    const campaigns =await Campaign.find().select("name audienceSize createdAt").sort({ createdAt: -1 });
+    const userGoogleId = req.user.googleId;
 
-    res.json({
-      totalCustomers,
-      totalCampaigns,
-      totalMessages: totalLogs,
-      sentMessages: sentLogs,
-      failedMessages: failedLogs,
-      successRate:`${successRate}%`,
-      campaigns
-    });
+    const campaigns = await Campaign.find({ userId: userGoogleId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const campaignData = await Promise.all(
+      campaigns.map(async (campaign) => {
+        const logs = await CommunicationLog.find({ campaignId: campaign._id });
+
+        const stats = {
+          sent: logs.filter((log) => log.status === "Sent").length,
+          failed: logs.filter((log) => log.status === "Failed").length,
+          total: logs.length,
+        };
+        const summary = await generateCampaignSummary(campaign, stats);
+        return {
+          ...campaign,
+          stats,
+          summary,
+        };
+      })
+    );
+
+    res.json({ campaigns: campaignData });
   } catch (error) {
     console.error("Error fetching dashboard:", error);
     res.status(500).json({ message: "Server error", error: error.message });
