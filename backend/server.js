@@ -16,7 +16,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 app.use(express.json());
-app.use(session({ secret: "secretkey", resave: false, saveUninitialized: true }));
+app.use(session({ secret: process.env.GOOGLE_CLIENT_SECRET, resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 

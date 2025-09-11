@@ -78,7 +78,7 @@ router.get('/',async(req,res)=>{
         if(campaigns.length === 0){
             return res.status(404).json({ message: "No campaigns found for this user" });
         }
-        res.send(campaign);
+        res.send(campaigns);
     }catch(error){
         console.log("error in server",error);
         res.status(500).json({message:"error in server ",error:error.message});
