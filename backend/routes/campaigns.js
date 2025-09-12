@@ -36,8 +36,7 @@ router.post('/',async(req,res)=>{
                 "*",
                 "campaignId", campaign._id.toString(),
                 "customerId", cust._id.toString(),
-                "message",message,
-                "userId", req.user.googleId,
+                "message",message
             );
         }
         res.status(201).json({message: "campaign created and logs created",

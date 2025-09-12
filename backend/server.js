@@ -10,6 +10,7 @@ const logsRoutes = require("./routes/logs");
 const dashboardRoutes = require("./routes/dashboard");
 const processStreamstart = require("./consumers/communicationConsumer");
 const authRoutes = require("./routes/auth");
+const aiRoutes = require("./routes/ai");
 
 dotenv.config();
 const app = express();
@@ -25,6 +26,7 @@ app.use("/api/customer", customerRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/campaign", campaignRoutes);
 app.use("/api/logs", logsRoutes);
+app.use("/api/ai", aiRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
 connectDB();

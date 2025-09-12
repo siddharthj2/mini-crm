@@ -31,7 +31,6 @@ async function processStream(){
                     const log = new CommunicationLog({
                         campaignId: data.campaignId,
                         customerId: data.customerId,
-                        userId:data.userId,
                         message: data.message,
                         status,
                     });
