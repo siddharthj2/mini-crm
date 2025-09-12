@@ -14,9 +14,26 @@ router.post('/',async(req,res)=>{
         const {name,rules}=req.body;
         if(!name || !rules ) return res.status(401).json({message:"names rules are rewuires"})
 
-        const q={}
-        if(rules.minSpend) q.totalspend={$gte:rules.minSpend};
-        if(rules.maxVisits) q.visits={$lte:rules.maxVisits};
+        const { minSpend, maxVisits, operator } = rules || {};
+        let q = {};
+        const spendCond = typeof minSpend === "number" && !Number.isNaN(minSpend)
+          ? { totalspend: { $gte: minSpend } }
+          : null;
+        const visitsCond = typeof maxVisits === "number" && !Number.isNaN(maxVisits)
+          ? { visits: { $lte: maxVisits } }
+          : null;
+
+        if (spendCond && visitsCond) {
+          if ((operator || "AND").toUpperCase() === "OR") {
+            q = { $or: [spendCond, visitsCond] };
+          } else {
+            q = { ...spendCond, ...visitsCond };
+          }
+        } else if (spendCond) {
+          q = spendCond;
+        } else if (visitsCond) {
+          q = visitsCond;
+        }
 
         const customers=await Customer.find(q); 
         const campaign =new Campaign({
@@ -31,13 +48,25 @@ router.post('/',async(req,res)=>{
 
         for(let cust of customers){
             const message = aiMessages[Math.floor(Math.random() * aiMessages.length)];
-            await redis.xadd(
+            try {
+              await redis.xadd(
                 "communicationStream",
                 "*",
                 "campaignId", campaign._id.toString(),
                 "customerId", cust._id.toString(),
-                "message",message
-            );
+                "message", message
+              );
+            } catch (e) {
+              // Fallback: persist a log directly if stream is unavailable
+              const logtable = new CommunicationLog({
+                campaignId: campaign._id,
+                customerId: cust._id,
+                message,
+                status: "Queued",
+                userId: req.user.googleId,
+              });
+              await logtable.save().catch(() => {});
+            }
         }
         res.status(201).json({message: "campaign created and logs created",
                                 campaign,

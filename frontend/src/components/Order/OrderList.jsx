@@ -8,7 +8,7 @@ export default function OrderList() {
   const fetchOrders = async () => {
     try {
       const res = await orderApi.getAll();
-      setOrders(res.data);
+      setOrders(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error(err);
     }
@@ -28,7 +28,7 @@ export default function OrderList() {
       <ul>
         {orders.map((o) => (
           <li key={o._id}>
-            Customer: {o.customerId} | Amount: {o.amount} | Date:{" "}
+            Customer: {o.customerId?.name || o.customerId} | Amount: {o.amount} | Date:{" "}
             {new Date(o.date).toLocaleString()}
           </li>
         ))}

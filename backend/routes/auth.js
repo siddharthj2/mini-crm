@@ -48,7 +48,8 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/auth/fail" }),
   (req, res) => {
-    res.redirect("/api/dashboard");
+    const frontendBase = process.env.FRONTEND_URL || "http://localhost:5173";
+    res.redirect(`${frontendBase}/dashboard`);
   }
 );
 
@@ -56,7 +57,8 @@ router.get("/fail", (req, res) => res.send("Login failed"));
 
 router.get("/logout", (req, res) => {
   req.logout(() => {
-    res.redirect("/");
+    const frontendBase = process.env.FRONTEND_URL || "http://localhost:5173";
+    res.redirect(`${frontendBase}/login`);
   });
 });
 

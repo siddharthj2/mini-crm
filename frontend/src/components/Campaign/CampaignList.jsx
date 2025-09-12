@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import campaignApi from "../../api/campaignApi";
-import CampaignForm from "./CampaignForm";
 
 const CampaignList = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -10,7 +9,7 @@ const CampaignList = () => {
   const fetchCampaigns = async () => {
     try {
       const res = await campaignApi.getAll();
-      setCampaigns(res.campaigns || []);
+      setCampaigns(res.data?.campaigns || []);
     } catch (err) {
       setError("Failed to load campaigns");
       console.error(err);
@@ -25,8 +24,6 @@ const CampaignList = () => {
 
   return (
     <div className="campaign-list">
-      <CampaignForm onSuccess={fetchCampaigns} />
-
       <h2>Your Campaigns</h2>
       {loading ? (
         <p>Loading campaigns...</p>

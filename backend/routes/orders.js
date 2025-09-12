@@ -32,8 +32,8 @@ router.post('/',async(req,res)=>{
 router.get('/',async(req,res)=>{
     try{
         const order=await Order.find().populate("customerId","name email phone");
-        if(order.length==0) return res.status(401).json({message:"order not found"})
-        res.send(order);
+        if(order.length==0) return res.status(200).json([]);
+        res.status(200).json(order);
     }catch(error){
         console.log("error in server",error);
         res.status(500).json({message:"error in server ",error:error.message});
@@ -43,9 +43,9 @@ router.get('/',async(req,res)=>{
 
 router.get("/customer/:id",async(req,res)=>{
     try{
-        const order=await Order.find({customerId:req.params.id}).populate("customerId","name email phone");;
-        if(order.length==0) return res.status(401).json({message:"order not found"})
-        res.send(order);
+        const order=await Order.find({customerId:req.params.id}).populate("customerId","name email phone");
+        if(order.length==0) return res.status(200).json([]);
+        res.status(200).json(order);
     }catch(error){
         console.log("error in server",error);
         res.status(500).json({message:"error in server ",error:error.message});
