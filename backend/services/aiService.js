@@ -38,30 +38,28 @@ async function generateMessages(campaignName,rules){
 
 async function generateCampaignSummary(campaign, stats){
     try{
-        
-        const prompt = `Generate a friendly marketing summary for a CRM dashboard.
-        Campaign: "${campaign.name}".
-        Audience size: ${stats.total} customers.
-        Delivered successfully: ${stats.sent} messages (${((stats.sent / stats.total) * 100).toFixed(0)}% success rate).
-        High-value customers (₹10K+): ${stats.highValueSent || 0} delivered out of ${stats.highValueTotal || 0}.
-        Output 1-2 concise sentences suitable for display on a dashboard.`;
-        
-          const response = await groq.chat.completions.create({
+        const successRate = stats.total > 0 ? ((stats.sent / stats.total) * 100).toFixed(0) : 0;
+        const prompt = `Write ONE concise, plain-text sentence (no markdown, no bullets) summarizing this campaign for a CRM dashboard.
+Campaign: ${campaign.name}
+Audience: ${stats.total}
+Delivered: ${stats.sent}
+Failed: ${stats.failed}
+SuccessRatePercent: ${successRate}
+Tone: upbeat, business-like, 18-22 words.`;
+
+        const response = await groq.chat.completions.create({
             model: "llama-3.1-8b-instant",
             messages: [{ role: "user", content: prompt }],
-            max_tokens: 100,
-            temperature: 0.7,
-          });
-        
-          const text = response.choices[0]?.message?.content || "";
-          return text.trim();
+            max_tokens: 60,
+            temperature: 0.5,
+        });
+
+        const text = response.choices[0]?.message?.content || "";
+        return text.replace(/\s+/g, " ").replace(/[\*_`]+/g, "").trim();
     }catch(error){
         console.error("AI message generation error:", error.message);
-        return [
-        `Campaign: "${campaign.name}".
-        Audience size: ${stats.total} customers.
-        Delivered successfully: ${stats.sent} messages (${((stats.sent / stats.total) * 100).toFixed(0)}% success rate).`,
-        ]; 
+        const successRate = stats.total > 0 ? ((stats.sent / stats.total) * 100).toFixed(0) : 0;
+        return `"${campaign.name}" reached ${stats.total} customers; ${stats.sent} delivered, ${stats.failed} failed (${successRate}% success).`;
     }
 }
 

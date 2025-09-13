@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 
     const campaignData = await Promise.all(
       campaigns.map(async (campaign) => {
-        const logs = await CommunicationLog.find({ campaignId: campaign._id,userId: userGoogleId });
+        const logs = await CommunicationLog.find({ campaignId: campaign._id });
 
         const stats = {
           sent: logs.filter((log) => log.status === "Sent").length,

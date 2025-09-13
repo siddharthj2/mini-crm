@@ -57,7 +57,6 @@ router.post('/',async(req,res)=>{
                 "message", message
               );
             } catch (e) {
-              // Fallback: persist a log directly if stream is unavailable
               const logtable = new CommunicationLog({
                 campaignId: campaign._id,
                 customerId: cust._id,

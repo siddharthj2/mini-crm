@@ -12,6 +12,8 @@ const dashboardRoutes = require("./routes/dashboard");
 const processStreamstart = require("./consumers/communicationConsumer");
 const authRoutes = require("./routes/auth");
 const aiRoutes = require("./routes/ai");
+const swaggerUi = require("swagger-ui-express");
+const openapi = require("./docs/openapi");
 
 dotenv.config();
 const app = express();
@@ -31,6 +33,7 @@ app.use("/api/campaign", campaignRoutes);
 app.use("/api/logs", logsRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openapi));
 
 connectDB();
 // After DB is connected, sync indexes to pick up sparse/unique changes

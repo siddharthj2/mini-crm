@@ -26,7 +26,7 @@ export default function CustomerBulkUpload({ onSuccess }) {
 
   return (
     <div className="">
-      <h3 className="text-lg font-semibold text-white mb-2">Bulk Upload</h3>
+      <h3 className="text-lg font-semibold text-white mb-2">Upload here</h3>
       {error && <p className="text-red-400">{error}</p>}
       <div className="flex items-center gap-3">
         <input

@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "r
 import Navbar from "./layout/Navbar";
 import Sidebar from "./layout/Sidebar";
 
-// Pages
 import Login from "./pages/LoginPage";
 import Dashboard from "./pages/DashboardPage";
 import Customers from "./pages/CustomersPage";

@@ -25,7 +25,7 @@ const CampaignForm = ({ onSuccess }) => {
         message,
       });
 
-      if (onSuccess) onSuccess(res); // refresh list after creating
+      if (onSuccess) onSuccess(res);
       setName("");
       setTotalSpend("");
       setVisits("");
@@ -54,7 +54,7 @@ const CampaignForm = ({ onSuccess }) => {
           />
         </div>
         <div>
-          <label className="block text-sm text-neutral-400 mb-1">Total Spend</label>
+          <label className="block text-sm text-neutral-400 mb-1">Minimum Spend</label>
           <input
             type="number"
             value={totalSpend}
@@ -91,7 +91,7 @@ const CampaignForm = ({ onSuccess }) => {
           value={aiMessage || message}
           onChange={(e) => setMessage(e.target.value)}
           className="w-full rounded-md bg-neutral-900 border border-neutral-700 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-          placeholder='"Hi {name}, welcome back!"'
+          placeholder='"Hi make message here for you customer !"'
         />
         {aiError && <p className="text-red-400 text-sm mt-1">{aiError}</p>}
       </div>

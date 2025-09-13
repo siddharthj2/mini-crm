@@ -5,4 +5,4 @@ function ensureAuthenticated(req, res, next) {
     res.status(401).json({ message: "Unauthorized. Please login with Google." });
   }
   
-  module.exports = ensureAuthenticated;
+module.exports = ensureAuthenticated;
