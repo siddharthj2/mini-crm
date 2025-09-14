@@ -1,5 +1,5 @@
-import { HashRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { HashRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Navbar from "./layout/Navbar";
 import Sidebar from "./layout/Sidebar";
 import { tokenManager } from "./utils/tokenManager";
@@ -14,7 +14,27 @@ import CampaignHistory from "./pages/CampaignHistoryPage";
 
 function AppLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [tokenProcessed, setTokenProcessed] = useState(false);
   const isLogin = location.pathname === "/login";
+
+  useEffect(() => {
+    // Only process token once when component mounts
+    if (!tokenProcessed) {
+      const token = tokenManager.getTokenFromURL();
+      if (token) {
+        console.log('Processing token from URL');
+        tokenManager.setToken(token);
+        tokenManager.clearURLParams();
+        setTokenProcessed(true);
+        // Navigate to dashboard using React Router instead of window.location
+        navigate('/dashboard', { replace: true });
+      } else {
+        setTokenProcessed(true);
+      }
+    }
+  }, [navigate, tokenProcessed]);
+
   return (
     <div className="min-h-screen flex flex-col bg-neutral-950 text-neutral-100">
       {!isLogin && <Navbar />}
@@ -37,17 +57,6 @@ function AppLayout() {
 }
 
 function App() {
-  useEffect(() => {
-    // Extract token from URL if present
-    const token = tokenManager.getTokenFromURL();
-    if (token) {
-      tokenManager.setToken(token);
-      tokenManager.clearURLParams();
-      // Just navigate to dashboard without full page reload
-      window.location.hash = '#/dashboard';
-    }
-  }, []);
-
   return (
     <Router>
       <AppLayout />

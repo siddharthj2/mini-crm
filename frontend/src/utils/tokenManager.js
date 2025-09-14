@@ -23,20 +23,50 @@ export const tokenManager = {
     return !!localStorage.getItem(TOKEN_KEY);
   },
 
-  // Get token from URL parameters
+  // Get token from URL parameters (including hash fragment)
   getTokenFromURL: () => {
+    // First check query parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
+    let token = urlParams.get('token');
+    
+    // If not found in query params, check hash fragment
+    if (!token && window.location.hash) {
+      const hashParts = window.location.hash.split('?');
+      if (hashParts.length > 1) {
+        const hashParams = new URLSearchParams(hashParts[1]);
+        token = hashParams.get('token');
+      }
+    }
+    
     console.log('Token from URL:', token ? 'Found' : 'Not found');
     return token;
   },
 
   // Clear URL parameters after extracting token
   clearURLParams: () => {
-    if (window.location.search.includes('token=')) {
-      const url = new URL(window.location);
+    let needsUpdate = false;
+    const url = new URL(window.location);
+    
+    // Clear from query parameters
+    if (url.searchParams.has('token')) {
       url.searchParams.delete('token');
-      window.history.replaceState({}, '', url.pathname + url.hash);
+      needsUpdate = true;
+    }
+    
+    // Clear from hash fragment
+    if (url.hash && url.hash.includes('token=')) {
+      const hashParts = url.hash.split('?');
+      if (hashParts.length > 1) {
+        const hashParams = new URLSearchParams(hashParts[1]);
+        hashParams.delete('token');
+        const remainingParams = hashParams.toString();
+        url.hash = hashParts[0] + (remainingParams ? '?' + remainingParams : '');
+        needsUpdate = true;
+      }
+    }
+    
+    if (needsUpdate) {
+      window.history.replaceState({}, '', url.pathname + url.search + url.hash);
     }
   }
 };
