@@ -35,12 +35,14 @@ app.use(cors({
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With'],
+  exposedHeaders: ['Set-Cookie'],
 }));
 
 // Session configuration for cross-domain
@@ -48,11 +50,13 @@ app.use(session({
   secret: process.env.SESSION_SECRET || process.env.GOOGLE_CLIENT_SECRET, 
   resave: false, 
   saveUninitialized: false,
+  name: 'connect.sid', // Explicit session name
   cookie: {
     secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-domain
+    domain: process.env.NODE_ENV === 'production' ? undefined : undefined, // Let browser handle domain
   }
 }));
 app.use(passport.initialize());
@@ -76,6 +80,16 @@ app.get("/dashboard", (req, res) => {
 // Health check endpoint
 app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
+});
+
+// Session test endpoint
+app.get("/api/session-test", (req, res) => {
+  res.json({
+    isAuthenticated: req.isAuthenticated(),
+    user: req.user ? { email: req.user.email, name: req.user.name } : null,
+    sessionId: req.sessionID,
+    cookies: req.headers.cookie ? 'Present' : 'Missing'
+  });
 });
 
 connectDB();
