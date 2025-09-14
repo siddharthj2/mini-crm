@@ -67,6 +67,17 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openapi));
 
+// Fallback route for backend dashboard access
+app.get("/dashboard", (req, res) => {
+  const frontendBase = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
+  res.redirect(`${frontendBase}/dashboard`);
+});
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", timestamp: new Date().toISOString() });
+});
+
 connectDB();
 // After DB is connected, sync indexes to pick up sparse/unique changes
 const Customer = require("./models/Customer");

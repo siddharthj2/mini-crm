@@ -48,8 +48,15 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/auth/fail" }),
   (req, res) => {
+    // Debug logging
+    console.log("OAuth callback - Frontend Origin:", process.env.FRONTEND_ORIGIN);
+    console.log("OAuth callback - User:", req.user ? req.user.email : "No user");
+    
     const frontendBase = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
-    res.redirect(`${frontendBase}/dashboard`);
+    const redirectUrl = `${frontendBase}/dashboard`;
+    
+    console.log("Redirecting to:", redirectUrl);
+    res.redirect(redirectUrl);
   }
 );
 
