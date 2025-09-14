@@ -1,10 +1,18 @@
-MiniCRM 
-MiniCRM is a lightweight customer relationship management app that demonstrates modern web architecture:
-- Google OAuth login
-- Customer & order management
-- Campaign targeting with rule builder
+# Mini CRM Platform
+
+A comprehensive customer relationship management platform built for the Xeno SDE Internship assignment.
+
+🌐 **Live Demo**: [https://mini-crm-1-gmzf.onrender.com](https://mini-crm-1-gmzf.onrender.com)
+
+## Overview
+
+MiniCRM is a full-stack web application that demonstrates modern web architecture with:
+- Google OAuth 2.0 authentication with JWT tokens
+- Customer & order data ingestion via CSV uploads
+- Campaign targeting with flexible rule builder
 - Real-time delivery simulation via Redis Streams
-- AI-powered message suggestions and summaries
+- AI-powered message generation
+- Complete API documentation with Swagger
 
 Built with React, Node.js, MongoDB, and Redis.
 
