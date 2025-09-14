@@ -5,17 +5,20 @@ module.exports = {
     version: "1.0.0",
     description: "API documentation for MiniCRM (customers, orders, campaigns, logs, auth).",
   },
-  servers: [{ url: "http://localhost:8000/api" }],
+  servers: [
+    { url: "https://mini-crm-eut5.onrender.com/api", description: "Production server" },
+    { url: "http://localhost:8000/api", description: "Development server" }
+  ],
   paths: {
     "/customer": {
       get: {
         summary: "List customers",
-        security: [{ cookieAuth: [] }],
+        security: [{ bearerAuth: [] }],
         responses: { 200: { description: "Array of customers" } },
       },
       post: {
         summary: "Create customer",
-        security: [{ cookieAuth: [] }],
+        security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -38,16 +41,16 @@ module.exports = {
     "/customer/bulk": {
       post: {
         summary: "Bulk upload customers",
-        security: [{ cookieAuth: [] }],
+        security: [{ bearerAuth: [] }],
         requestBody: { required: true },
         responses: { 200: { description: "Bulk upload accepted" } },
       },
     },
     "/order": {
-      get: { summary: "List orders", security: [{ cookieAuth: [] }], responses: { 200: { description: "Array of orders" } } },
+      get: { summary: "List orders", security: [{ bearerAuth: [] }], responses: { 200: { description: "Array of orders" } } },
       post: {
         summary: "Create order",
-        security: [{ cookieAuth: [] }],
+        security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -67,10 +70,10 @@ module.exports = {
       },
     },
     "/campaign": {
-      get: { summary: "List campaigns", security: [{ cookieAuth: [] }], responses: { 200: { description: "Array of campaigns" } } },
+      get: { summary: "List campaigns", security: [{ bearerAuth: [] }], responses: { 200: { description: "Array of campaigns" } } },
       post: {
         summary: "Create campaign",
-        security: [{ cookieAuth: [] }],
+        security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -90,10 +93,10 @@ module.exports = {
       },
     },
     "/dashboard": {
-      get: { summary: "Dashboard data (campaigns with stats & summaries)", security: [{ cookieAuth: [] }], responses: { 200: { description: "Dashboard payload" } } },
+      get: { summary: "Dashboard data (campaigns with stats & summaries)", security: [{ bearerAuth: [] }], responses: { 200: { description: "Dashboard payload" } } },
     },
     "/logs": {
-      get: { summary: "List communication logs", security: [{ cookieAuth: [] }], responses: { 200: { description: "Logs" } } },
+      get: { summary: "List communication logs", security: [{ bearerAuth: [] }], responses: { 200: { description: "Logs" } } },
     },
     "/ai/messages": {
       post: { summary: "Generate AI messages (debug)", responses: { 200: { description: "Messages" } } },
@@ -101,6 +104,12 @@ module.exports = {
   },
   components: {
     securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        description: "JWT Bearer token authentication"
+      },
       cookieAuth: { type: "apiKey", in: "cookie", name: "connect.sid" },
     },
   },
