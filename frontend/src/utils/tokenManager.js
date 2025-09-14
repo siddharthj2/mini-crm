@@ -6,6 +6,8 @@ export const tokenManager = {
   setToken: (token) => {
     console.log('Setting token in localStorage');
     localStorage.setItem(TOKEN_KEY, token);
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event('tokenUpdate'));
   },
 
   // Get token from localStorage
@@ -16,6 +18,8 @@ export const tokenManager = {
   // Remove token from localStorage
   removeToken: () => {
     localStorage.removeItem(TOKEN_KEY);
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event('tokenUpdate'));
   },
 
   // Check if token exists
