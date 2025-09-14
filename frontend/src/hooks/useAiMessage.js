@@ -10,7 +10,7 @@ export default function useAiMessage() {
     setLoading(true);
     setError("");
     try {
-        const res = await axios.post("http://localhost:8000/api/ai/generate", { 
+        const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000/api'}/ai/generate`, { 
             campaignName: prompt.name, 
             rules: prompt.rules 
         });

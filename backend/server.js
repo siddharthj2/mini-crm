@@ -20,9 +20,41 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 app.use(express.json());
-// Allow frontend dev server to access API with cookies
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
-app.use(session({ secret: process.env.GOOGLE_CLIENT_SECRET, resave: false, saveUninitialized: false }));
+
+// CORS configuration for cross-domain deployment
+const allowedOrigins = [
+  process.env.FRONTEND_ORIGIN || "http://localhost:5173",
+  "http://localhost:5173", // For local development
+];
+
+app.use(cors({ 
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+}));
+
+// Session configuration for cross-domain
+app.use(session({ 
+  secret: process.env.SESSION_SECRET || process.env.GOOGLE_CLIENT_SECRET, 
+  resave: false, 
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-domain
+  }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 

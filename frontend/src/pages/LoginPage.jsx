@@ -1,6 +1,6 @@
 export default function LoginPage() {
   const handleLogin = () => {
-    window.location.href = "http://localhost:8000/auth/google";
+    window.location.href = `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000'}/auth/google`;
   };
 
   return (

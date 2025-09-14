@@ -31,7 +31,7 @@ export default function Sidebar() {
           <span className="i">🕘</span>
           <span>Campaign History</span>
         </NavLink>
-        <a href="http://localhost:8000/auth/logout" className={`${navItemBase} text-red-400 hover:bg-red-950/40 hover:text-red-300`}>
+        <a href={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000'}/auth/logout`} className={`${navItemBase} text-red-400 hover:bg-red-950/40 hover:text-red-300`}>
           <span className="i">↪</span>
           <span>Logout</span>
         </a>
