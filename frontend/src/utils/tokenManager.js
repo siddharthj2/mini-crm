@@ -4,6 +4,7 @@ const TOKEN_KEY = 'minicrm_token';
 export const tokenManager = {
   // Store token in localStorage
   setToken: (token) => {
+    console.log('Setting token in localStorage');
     localStorage.setItem(TOKEN_KEY, token);
   },
 
@@ -25,7 +26,9 @@ export const tokenManager = {
   // Get token from URL parameters
   getTokenFromURL: () => {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('token');
+    const token = urlParams.get('token');
+    console.log('Token from URL:', token ? 'Found' : 'Not found');
+    return token;
   },
 
   // Clear URL parameters after extracting token

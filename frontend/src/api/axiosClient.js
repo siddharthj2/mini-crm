@@ -28,7 +28,7 @@ axiosClient.interceptors.response.use(
     // If token is invalid, redirect to login
     if (error.response?.status === 401) {
       tokenManager.removeToken();
-      window.location.href = `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000'}/auth/google`;
+      window.location.hash = '#/login';
     }
     
     return Promise.reject(error);

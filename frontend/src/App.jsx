@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import Navbar from "./layout/Navbar";
 import Sidebar from "./layout/Sidebar";
 import { tokenManager } from "./utils/tokenManager";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Login from "./pages/LoginPage";
 import Dashboard from "./pages/DashboardPage";
@@ -23,11 +24,11 @@ function AppLayout() {
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/customers" element={<Customers />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/campaigns" element={<Campaigns />} />
-            <Route path="/campaign-history" element={<CampaignHistory />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/customers" element={<ProtectedRoute><Customers /></ProtectedRoute>} />
+            <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+            <Route path="/campaigns" element={<ProtectedRoute><Campaigns /></ProtectedRoute>} />
+            <Route path="/campaign-history" element={<ProtectedRoute><CampaignHistory /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>
@@ -42,8 +43,8 @@ function App() {
     if (token) {
       tokenManager.setToken(token);
       tokenManager.clearURLParams();
-      // Redirect to dashboard
-      window.location.href = window.location.origin + window.location.pathname + '#/dashboard';
+      // Just navigate to dashboard without full page reload
+      window.location.hash = '#/dashboard';
     }
   }, []);
 

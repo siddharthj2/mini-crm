@@ -37,7 +37,7 @@ export default function Sidebar() {
             e.preventDefault();
             // Clear token and redirect to login
             localStorage.removeItem('minicrm_token');
-            window.location.href = window.location.origin + window.location.pathname + '#/login';
+            window.location.hash = '#/login';
           }}
           className={`${navItemBase} text-red-400 hover:bg-red-950/40 hover:text-red-300`}
         >

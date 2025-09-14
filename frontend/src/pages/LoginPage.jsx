@@ -5,7 +5,7 @@ export default function LoginPage() {
   useEffect(() => {
     // If user already has a token, redirect to dashboard
     if (tokenManager.hasToken()) {
-      window.location.href = window.location.origin + window.location.pathname + '#/dashboard';
+      window.location.hash = '#/dashboard';
     }
   }, []);
 
