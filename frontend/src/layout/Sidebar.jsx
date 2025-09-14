@@ -31,7 +31,16 @@ export default function Sidebar() {
           <span className="i">🕘</span>
           <span>Campaign History</span>
         </NavLink>
-        <a href={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000'}/auth/logout`} className={`${navItemBase} text-red-400 hover:bg-red-950/40 hover:text-red-300`}>
+        <a 
+          href="#" 
+          onClick={(e) => {
+            e.preventDefault();
+            // Clear token and redirect to login
+            localStorage.removeItem('minicrm_token');
+            window.location.href = window.location.origin + window.location.pathname + '#/login';
+          }}
+          className={`${navItemBase} text-red-400 hover:bg-red-950/40 hover:text-red-300`}
+        >
           <span className="i">↪</span>
           <span>Logout</span>
         </a>

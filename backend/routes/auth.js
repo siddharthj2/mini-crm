@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const Customer = require("../models/Customer");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -52,8 +53,19 @@ router.get(
     console.log("OAuth callback - Frontend Origin:", process.env.FRONTEND_ORIGIN);
     console.log("OAuth callback - User:", req.user ? req.user.email : "No user");
     
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        userId: req.user._id, 
+        email: req.user.email,
+        name: req.user.name 
+      },
+      process.env.JWT_SECRET || process.env.GOOGLE_CLIENT_SECRET,
+      { expiresIn: '24h' }
+    );
+    
     const frontendBase = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
-    const redirectUrl = `${frontendBase}/#/dashboard`;
+    const redirectUrl = `${frontendBase}/#/dashboard?token=${token}`;
     
     console.log("Redirecting to:", redirectUrl);
     res.redirect(redirectUrl);

@@ -1,6 +1,8 @@
 import { HashRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import Navbar from "./layout/Navbar";
 import Sidebar from "./layout/Sidebar";
+import { tokenManager } from "./utils/tokenManager";
 
 import Login from "./pages/LoginPage";
 import Dashboard from "./pages/DashboardPage";
@@ -34,6 +36,17 @@ function AppLayout() {
 }
 
 function App() {
+  useEffect(() => {
+    // Extract token from URL if present
+    const token = tokenManager.getTokenFromURL();
+    if (token) {
+      tokenManager.setToken(token);
+      tokenManager.clearURLParams();
+      // Redirect to dashboard
+      window.location.href = window.location.origin + window.location.pathname + '#/dashboard';
+    }
+  }, []);
+
   return (
     <Router>
       <AppLayout />

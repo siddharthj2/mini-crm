@@ -1,4 +1,14 @@
+import { useEffect } from "react";
+import { tokenManager } from "../utils/tokenManager";
+
 export default function LoginPage() {
+  useEffect(() => {
+    // If user already has a token, redirect to dashboard
+    if (tokenManager.hasToken()) {
+      window.location.href = window.location.origin + window.location.pathname + '#/dashboard';
+    }
+  }, []);
+
   const handleLogin = () => {
     window.location.href = `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000'}/auth/google`;
   };
