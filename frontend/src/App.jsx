@@ -19,7 +19,6 @@ function AppLayout() {
   const isLogin = location.pathname === "/login";
 
   useEffect(() => {
-    // Only process token once when component mounts
     if (!tokenProcessed) {
       const token = tokenManager.getTokenFromURL();
       if (token) {
@@ -27,7 +26,6 @@ function AppLayout() {
         tokenManager.setToken(token);
         tokenManager.clearURLParams();
         setTokenProcessed(true);
-        // Navigate to dashboard using React Router instead of window.location
         navigate('/dashboard', { replace: true });
       } else {
         setTokenProcessed(true);

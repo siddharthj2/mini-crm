@@ -1,6 +1,6 @@
 const express = require("express");
 const Customer = require("../models/Customer");
-const ensureAuthenticated = require("../middleware/auth"); // only for protected routes
+const ensureAuthenticated = require("../middleware/auth"); 
 
 const router = express.Router();
 
@@ -11,7 +11,6 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: "Name and email are required" });
     }
 
-    // Basic email format check
     const emailOk = /.+@.+\..+/.test(String(email));
     if (!emailOk) {
       return res.status(400).json({ message: "Please enter a valid email" });
@@ -32,7 +31,6 @@ router.post('/', async (req, res) => {
     res.status(201).json({ message: "Customer created successfully", customer });
   } catch (error) {
     if (error && error.code === 11000) {
-      // Duplicate key
       const field = Object.keys(error.keyValue || {})[0] || "field";
       return res.status(409).json({ message: `Duplicate ${field}. A customer with this ${field} already exists.` });
     }

@@ -35,7 +35,6 @@ export default function Sidebar() {
           href="#" 
           onClick={(e) => {
             e.preventDefault();
-            // Clear token and redirect to login
             localStorage.removeItem('minicrm_token');
             window.location.hash = '#/login';
           }}

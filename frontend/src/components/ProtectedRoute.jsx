@@ -7,7 +7,6 @@ export default function ProtectedRoute({ children }) {
 
   useEffect(() => {
     const checkAuth = () => {
-      // First check if there's a token in the URL that needs processing
       const urlToken = tokenManager.getTokenFromURL();
       if (urlToken) {
         console.log('ProtectedRoute: Found token in URL, storing it');
@@ -18,7 +17,6 @@ export default function ProtectedRoute({ children }) {
         return;
       }
 
-      // Then check localStorage
       const storedToken = tokenManager.getToken();
       if (storedToken) {
         console.log('ProtectedRoute: Found stored token');
@@ -32,7 +30,6 @@ export default function ProtectedRoute({ children }) {
 
     checkAuth();
 
-    // Also listen for storage changes (in case token is set in another tab/component)
     const handleStorageChange = () => {
       const token = tokenManager.getToken();
       setIsAuthenticated(!!token);
@@ -40,7 +37,6 @@ export default function ProtectedRoute({ children }) {
 
     window.addEventListener('storage', handleStorageChange);
     
-    // Custom event for when token is set programmatically
     const handleTokenUpdate = () => {
       const token = tokenManager.getToken();
       setIsAuthenticated(!!token);

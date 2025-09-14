@@ -49,11 +49,11 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/auth/fail" }),
   (req, res) => {
-    // Debug logging
+    //logging
     console.log("OAuth callback - Frontend Origin:", process.env.FRONTEND_ORIGIN);
     console.log("OAuth callback - User:", req.user ? req.user.email : "No user");
     
-    // Generate JWT token
+    //JWT token
     const token = jwt.sign(
       { 
         userId: req.user._id, 

@@ -4,6 +4,8 @@ A comprehensive customer relationship management platform built for the Xeno SDE
 
 🌐 **Live Demo**: [https://mini-crm-1-gmzf.onrender.com](https://mini-crm-1-gmzf.onrender.com)
 
+📚 **API Documentation**: [https://mini-crm-eut5.onrender.com/api/docs](https://mini-crm-eut5.onrender.com/api/docs)
+
 ## Overview
 
 MiniCRM is a full-stack web application that demonstrates modern web architecture with:
