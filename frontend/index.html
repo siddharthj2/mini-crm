@@ -5,6 +5,12 @@
     <link rel="icon" type="image/png" href="/mini_crm_image.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MiniCRM</title>
+    <script>
+      // Fallback for Render routing
+      if (window.location.pathname !== '/' && !window.location.pathname.startsWith('/assets/')) {
+        window.history.replaceState({}, '', '/');
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

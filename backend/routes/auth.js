@@ -53,7 +53,7 @@ router.get(
     console.log("OAuth callback - User:", req.user ? req.user.email : "No user");
     
     const frontendBase = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
-    const redirectUrl = `${frontendBase}/dashboard`;
+    const redirectUrl = `${frontendBase}/#/dashboard`;
     
     console.log("Redirecting to:", redirectUrl);
     res.redirect(redirectUrl);
@@ -65,7 +65,7 @@ router.get("/fail", (req, res) => res.send("Login failed"));
 router.get("/logout", (req, res) => {
   req.logout(() => {
     const frontendBase = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
-    res.redirect(`${frontendBase}/login`);
+    res.redirect(`${frontendBase}/#/login`);
   });
 });
 

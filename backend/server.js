@@ -70,7 +70,7 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openapi));
 // Fallback route for backend dashboard access
 app.get("/dashboard", (req, res) => {
   const frontendBase = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
-  res.redirect(`${frontendBase}/dashboard`);
+  res.redirect(`${frontendBase}/#/dashboard`);
 });
 
 // Health check endpoint

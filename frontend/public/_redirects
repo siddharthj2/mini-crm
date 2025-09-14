@@ -1,1 +1,9 @@
+# Redirect all routes to index.html for React Router
 /*    /index.html   200
+
+# Specific routes
+/dashboard    /index.html   200
+/customers    /index.html   200
+/orders       /index.html   200
+/campaigns    /index.html   200
+/campaign-history    /index.html   200
