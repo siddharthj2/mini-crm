@@ -35,7 +35,7 @@ router.post('/',async(req,res)=>{
           q = visitsCond;
         }
 
-        const customers=await Customer.find(q); 
+        const customers=await Customer.find({...q, userId: req.user.googleId}); 
         const campaign =new Campaign({
             name,
             rules,
@@ -54,7 +54,8 @@ router.post('/',async(req,res)=>{
                 "*",
                 "campaignId", campaign._id.toString(),
                 "customerId", cust._id.toString(),
-                "message", message
+                "message", message,
+                "userId", req.user.googleId
               );
             } catch (e) {
               const logtable = new CommunicationLog({

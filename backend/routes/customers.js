@@ -4,7 +4,7 @@ const ensureAuthenticated = require("../middleware/auth");
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/', ensureAuthenticated, async (req, res) => {
   try {
     const { name, email, phone, visits, totalSpend, totalspend } = req.body;
     if (!name || !email) {
@@ -26,6 +26,7 @@ router.post('/', async (req, res) => {
       phone: normalizedPhone,
       visits: normalizedVisits,
       totalspend: normalizedSpend,
+      userId: req.user.googleId, 
     });
     await customer.save();
     res.status(201).json({ message: "Customer created successfully", customer });
@@ -39,7 +40,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.post("/bulk", async (req, res) => {
+router.post("/bulk", ensureAuthenticated, async (req, res) => {
   try {
     const customersData = req.body;
 
@@ -54,6 +55,7 @@ router.post("/bulk", async (req, res) => {
       phone: c.phone ? Number(String(c.phone).replace(/\D/g, "")) : undefined,
       visits: typeof c.visits === "number" ? c.visits : Number(c.visits) || 0,
       totalspend: typeof c.totalspend === "number" ? c.totalspend : Number(c.totalSpend) || 0,
+      userId: req.user.googleId, 
     }));
 
     const customers = await Customer.insertMany(normalized);
@@ -67,9 +69,9 @@ router.post("/bulk", async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', ensureAuthenticated, async (req, res) => {
   try {
-    const customers = await Customer.find();
+    const customers = await Customer.find({ userId: req.user.googleId });
     res.json(customers);
   } catch (error) {
     console.error("Error fetching customers:", error);

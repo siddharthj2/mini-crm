@@ -21,15 +21,15 @@ const port = process.env.PORT || 8000;
 
 app.use(express.json());
 
-// CORS configuration for cross-domain deployment
+
 const allowedOrigins = [
   process.env.FRONTEND_ORIGIN || "http://localhost:5173",
-  "http://localhost:5173", // For local development
+  "http://localhost:5173", 
 ];
 
 app.use(cors({ 
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.indexOf(origin) !== -1) {
@@ -45,18 +45,18 @@ app.use(cors({
   exposedHeaders: ['Set-Cookie'],
 }));
 
-// Session configuration for cross-domain
+
 app.use(session({ 
   secret: process.env.SESSION_SECRET || process.env.GOOGLE_CLIENT_SECRET, 
   resave: false, 
   saveUninitialized: false,
-  name: 'connect.sid', // Explicit session name
+  name: 'connect.sid', 
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    secure: process.env.NODE_ENV === 'production', 
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-domain
-    domain: process.env.NODE_ENV === 'production' ? undefined : undefined, // Let browser handle domain
+    maxAge: 24 * 60 * 60 * 1000, 
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',  
+    domain: process.env.NODE_ENV === 'production' ? undefined : undefined, 
   }
 }));
 app.use(passport.initialize());
@@ -71,18 +71,18 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openapi));
 
-// Fallback route for backend dashboard access
+
 app.get("/dashboard", (req, res) => {
   const frontendBase = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
   res.redirect(`${frontendBase}/#/dashboard`);
 });
 
-// Health check endpoint
+
 app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-// Session test endpoint
+
 app.get("/api/session-test", (req, res) => {
   res.json({
     isAuthenticated: req.isAuthenticated(),
@@ -93,7 +93,7 @@ app.get("/api/session-test", (req, res) => {
 });
 
 connectDB();
-// After DB is connected, sync indexes to pick up sparse/unique changes
+
 const Customer = require("./models/Customer");
 Customer.syncIndexes().catch((e) => console.error("Failed to sync customer indexes", e.message));
 processStreamstart();

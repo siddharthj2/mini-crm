@@ -13,8 +13,13 @@ router.post('/',async(req,res)=>{
 
         const customer=await Customer.findById(customerId)
         if(!customer) return res.status(400).json({message:"customer not found"});
+        
+        
+        if(customer.userId !== req.user.googleId) {
+            return res.status(403).json({message:"Access denied. Customer does not belong to you."});
+        }
 
-        const order=new Order({customerId,amount,items})
+        const order=new Order({customerId,amount,items,userId:req.user.googleId})
         await order.save();
 
         customer.visits+=1;
@@ -31,7 +36,7 @@ router.post('/',async(req,res)=>{
 
 router.get('/',async(req,res)=>{
     try{
-        const order=await Order.find().populate("customerId","name email phone");
+        const order=await Order.find({userId:req.user.googleId}).populate("customerId","name email phone");
         if(order.length==0) return res.status(200).json([]);
         res.status(200).json(order);
     }catch(error){
@@ -43,7 +48,13 @@ router.get('/',async(req,res)=>{
 
 router.get("/customer/:id",async(req,res)=>{
     try{
-        const order=await Order.find({customerId:req.params.id}).populate("customerId","name email phone");
+        
+        const customer = await Customer.findById(req.params.id);
+        if(!customer || customer.userId !== req.user.googleId) {
+            return res.status(403).json({message:"Access denied. Customer does not belong to you."});
+        }
+        
+        const order=await Order.find({customerId:req.params.id,userId:req.user.googleId}).populate("customerId","name email phone");
         if(order.length==0) return res.status(200).json([]);
         res.status(200).json(order);
     }catch(error){

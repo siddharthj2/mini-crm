@@ -33,6 +33,7 @@ async function processStream(){
                         customerId: data.customerId,
                         message: data.message,
                         status,
+                        userId: data.userId || "system",
                     });
                     await log.save();
                     console.log(`Processed message for ${key} and customer ${data.customerId}`);

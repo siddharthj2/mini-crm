@@ -8,9 +8,9 @@ const customerSchema=new mongoose.Schema({
     totalspend:{type:Number,default:0},
     visits:{type:Number,default:0},
     lastOrderDate:{type:Date},
+    userId:{type:String,required:true}, 
     createdAt:{type:Date,default:Date.now}
 })
-
 
 const Customer=mongoose.model("Customer", customerSchema);
 module.exports=Customer;
